@@ -11,3 +11,4 @@ rootProject.name = 'demo-oauth2-integration'
 
 include 'demo-authentication-server'
 include 'demo-resource-server'
+include 'demo-client'

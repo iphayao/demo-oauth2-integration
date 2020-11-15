@@ -1,20 +1,23 @@
 package io.phayao.demo.config;
 
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
-@EnableWebSecurity
-public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
+@EnableWebFluxSecurity
+public class ResourceServerConfig {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.mvcMatcher("/message/**")
-                .authorizeRequests()
-                .mvcMatchers("/message/**")
-                .access("hasAuthority('SCOPE_message.read')")
+    @Bean
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        http.authorizeExchange()
+                .pathMatchers("/messages/**")
+                .hasAuthority("SCOPE_message.read")
+                .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer()
                 .jwt();
+        return http.build();
     }
+
 }
